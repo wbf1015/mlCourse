@@ -17,19 +17,19 @@ def data_fetch_preprocessing():
     test_image = open('t10k-images.idx3-ubyte', 'rb')
     train_label = open('train-labels.idx1-ubyte', 'rb')
     test_label = open('t10k-labels.idx1-ubyte', 'rb')
-
-    magic, n = struct.unpack('>II',train_label.read(8))
-    # 原始数据的标签
-    y_train_label = np.array(np.fromfile(train_label,dtype=np.uint8), ndmin=1)
+    # 按照给定的格式进行解析，不知道干啥用的 尤其是这个>II 没太搞懂，而且他这块只弄标签
+    magic, n = struct.unpack('>II', train_label.read(8))
+    # 原始数据的标签 从文本或二进制文件中的数据构造一个数组
+    #  uint8类型的数据对象可以保证数组内的所有数值的大小都在 [0, 255]之间。 而图像数据中的每个像素点的值都是256个灰度级
+    y_train_label = np.array(np.fromfile(train_label, dtype=np.uint8), ndmin=1)
     y_train = np.ones((10, 60000)) * 0.01
     for i in range(60000):
         y_train[y_train_label[i]][i] = 0.99
 
     # 测试数据的标签
-    magic_t, n_t = struct.unpack('>II',
-                                 test_label.read(8))
-    y_test = np.fromfile(test_label,
-                         dtype=np.uint8).reshape(10000, 1)
+    magic_t, n_t = struct.unpack('>II',test_label.read(8))
+    y_test = np.fromfile(test_label,dtype=np.uint8).reshape(10000, 1)
+
     # print(y_train[0])
     # 训练数据共有60000个
     # print(len(labels))
